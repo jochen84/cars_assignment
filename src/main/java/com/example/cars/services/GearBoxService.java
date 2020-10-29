@@ -1,7 +1,7 @@
 package com.example.cars.services;
 
-import com.example.cars.entities.Gear;
-import com.example.cars.repositories.GearRepository;
+import com.example.cars.entities.GearBox;
+import com.example.cars.repositories.GearBoxRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -16,42 +16,42 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class GearService {
+public class GearBoxService {
 
-    private final GearRepository gearRepository;
+    private final GearBoxRepository gearBoxRepository;
 
     @Cacheable(value = "gearsCache")
-    public List<Gear> findAll(){
-        log.info("Request to find all users");
-        return gearRepository.findAll();
+    public List<GearBox> findAll(){
+        log.info("Request to find all gears");
+        return gearBoxRepository.findAll();
     }
 
     @Cacheable(value = "gearsCache", key = "#id")
-    public Gear findById(String id){
-        return gearRepository.findById(id)
+    public GearBox findById(String id){
+        return gearBoxRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a gear with that id"));
     }
 
     @CachePut(value = "gearsCache", key = "#result.id")
-    public Gear save(Gear gear){
-        return gearRepository.save(gear);
+    public GearBox save(GearBox gearBox){
+        return gearBoxRepository.save(gearBox);
     }
 
     @CachePut(value = "gearsCache", key = "#id")
-    public void update(String id, Gear gear){
-        if (!gearRepository.existsById(id)){
+    public void update(String id, GearBox gearBox){
+        if (!gearBoxRepository.existsById(id)){
             log.error("Could not find a gear with that id");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a gear with that id");
         }
-        gear.setId(id);
-        gearRepository.save(gear);
+        gearBox.setId(id);
+        gearBoxRepository.save(gearBox);
     }
     @CacheEvict(value = "gearsCache", key = "#id")
     public void delete(String id){
-        if (!gearRepository.existsById(id)){
+        if (!gearBoxRepository.existsById(id)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a gear with that id");
         }
-        gearRepository.deleteById(id);
+        gearBoxRepository.deleteById(id);
     }
 
 }

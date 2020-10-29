@@ -1,6 +1,5 @@
 package com.example.cars.entities;
 
-import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
@@ -13,7 +12,6 @@ import java.util.List;
 
 
 @Data
-@Builder
 public class Car implements Serializable {
     private static final long serialVersionUID = 7478791537814469150L;
 
@@ -43,5 +41,5 @@ public class Car implements Serializable {
     @NotEmpty(message = "Engine info. can not be empty")
     private Engine engine;
     @NotEmpty(message = "Gear info. can not be empty")
-    private Gear gear;
+    private GearBox gearBox;
 }

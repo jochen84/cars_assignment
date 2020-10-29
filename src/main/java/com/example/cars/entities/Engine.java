@@ -8,7 +8,6 @@ import javax.validation.constraints.*;
 
 
 @Data
-@Builder
 public class Engine {
     @Id
     private String id;

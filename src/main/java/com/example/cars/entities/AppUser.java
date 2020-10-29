@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@Builder
 public class AppUser implements Serializable {
     private static final long serialVersionUID = -4911994786915834478L;
 
