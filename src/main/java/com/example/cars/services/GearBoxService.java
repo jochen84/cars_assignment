@@ -22,14 +22,14 @@ public class GearBoxService {
 
     @Cacheable(value = "gearsCache")
     public List<GearBox> findAll(){
-        log.info("Request to find all gears");
+        log.info("Request to find all gearboxes");
         return gearBoxRepository.findAll();
     }
 
     @Cacheable(value = "gearsCache", key = "#id")
     public GearBox findById(String id){
         return gearBoxRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a gear with that id"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a gearbox with that id"));
     }
 
     @CachePut(value = "gearsCache", key = "#result.id")
@@ -40,8 +40,8 @@ public class GearBoxService {
     @CachePut(value = "gearsCache", key = "#id")
     public void update(String id, GearBox gearBox){
         if (!gearBoxRepository.existsById(id)){
-            log.error("Could not find a gear with that id");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a gear with that id");
+            log.error("Could not find a gearbox with that id");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a gearbox with that id");
         }
         gearBox.setId(id);
         gearBoxRepository.save(gearBox);
@@ -49,7 +49,7 @@ public class GearBoxService {
     @CacheEvict(value = "gearsCache", key = "#id")
     public void delete(String id){
         if (!gearBoxRepository.existsById(id)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a gear with that id");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a gearbox with that id");
         }
         gearBoxRepository.deleteById(id);
     }
