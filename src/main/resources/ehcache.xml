@@ -25,7 +25,19 @@
         </resources>
     </cache-template>
     <!-- Cache configuration -->
+    <cache alias="appUsersCache" uses-template="default">
+        <!--<key-type>java.lang.String</key-type>
+        <value-type>java.util.ArrayList</value-type>-->
+    </cache>
     <cache alias="carsCache" uses-template="default">
+        <!--<key-type>java.lang.String</key-type>
+        <value-type>java.util.ArrayList</value-type>-->
+    </cache>
+    <cache alias="enginesCache" uses-template="default">
+        <!--<key-type>java.lang.String</key-type>
+        <value-type>java.util.ArrayList</value-type>-->
+    </cache>
+    <cache alias="gearsCache" uses-template="default">
         <!--<key-type>java.lang.String</key-type>
         <value-type>java.util.ArrayList</value-type>-->
     </cache>

@@ -1,9 +1,14 @@
 package com.example.cars.entities;
 
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.*;
 
+
+@Data
+@Builder
 public class Engine {
     @Id
     private String id;

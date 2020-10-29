@@ -17,8 +17,6 @@ import java.util.List;
 public class Car implements Serializable {
     private static final long serialVersionUID = 7478791537814469150L;
 
-//    String id, String brand, String model, int yearModel, int weight, int
-//    numOfSeats, List<String> equipment etc
     @Id
     private String id;
     @NotEmpty(message = "Registration no. can not be empty")
@@ -46,7 +44,4 @@ public class Car implements Serializable {
     private Engine engine;
     @NotEmpty(message = "Gear info. can not be empty")
     private Gear gear;
-
-
-
 }

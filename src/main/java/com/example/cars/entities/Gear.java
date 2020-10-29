@@ -22,6 +22,6 @@ public class Gear {
     @Max(value = 8, message = "Total Gears should be no larger than 8")
     private int totalGears;
     @NotEmpty(message = "Drive line can not be empty")
-    @Pattern(regexp = "Front|REAR|AWD", message = "Drive Line must be Front or REAR or AWD ")
+    @Pattern(regexp = "Front|Rear|AWD", message = "Drive Line must be Front or Rear or AWD ")
     private String driveLine;
 }

@@ -41,6 +41,8 @@ public class AppUser implements Serializable {
     private String username;
     @Size(min = 4, max = 10, message = "Password length invalid")
     @NotBlank(message = "Password must contain a value ")
+    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private List<String> acl;
 
