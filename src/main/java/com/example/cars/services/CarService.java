@@ -26,6 +26,23 @@ public class CarService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id"));
     }
 
-    public Car save()
+    public Car save(Car car){
+        return carRepository.save(car);
+    }
+
+    public void update(String id, Car car){
+        if (!carRepository.existsById(id)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id");
+        }
+        car.setId(id);
+        carRepository.save(car);
+    }
+
+    public void delete(String id){
+        if (!carRepository.existsById(id)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id");
+        }
+        carRepository.deleteById(id);
+    }
 
 }
