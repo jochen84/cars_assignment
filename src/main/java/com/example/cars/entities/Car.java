@@ -26,11 +26,9 @@ public class Car implements Serializable {
     @NotEmpty(message = "Color can not be empty")
     @Size(min = 1, max = 10, message = "Color length not valid")
     private String color;
-    @NotNull(message = "Production Year can not be empty")
     @Min(value = 1800, message = "Production Year should be larger than 1800")
     @Max(value = 2020, message = "Production Year should be smaller than 2020")
     private int prodYear;
-    @NotNull(message = "No. of Seats can not be empty")
     @Min(value = 2, message = "No. of Seats should be no smaller than 2")
     @Max(value = 7, message = "No. of Seats should be no larger than 7")
     private int numOfSeats;
