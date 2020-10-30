@@ -2,6 +2,7 @@ package com.example.cars.entities;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -33,6 +34,8 @@ public class Car implements Serializable {
     @Max(value = 7, message = "No. of Seats should be no larger than 7")
     private int numOfSeats;
     private List<String> equipment;
+    @DBRef
     private Engine engine;
+    @DBRef
     private GearBox gearBox;
 }
