@@ -1,6 +1,5 @@
 package com.example.cars.entities;
 
-import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
@@ -13,7 +12,6 @@ public class GearBox {
     @NotEmpty(message = "Gearbox can not be empty")
     @Pattern(regexp = "Auto|Manual", message = "Gearbox must be Auto or Manual")
     private String gearBox;
-    @NotNull(message = "Total Gears can not be empty")
     @Min(value = 4, message = "Total Gears should be no smaller than 4")
     @Max(value = 8, message = "Total Gears should be no larger than 8")
     private int totalGears;
