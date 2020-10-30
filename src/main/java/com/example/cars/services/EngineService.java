@@ -23,15 +23,18 @@ public class EngineService {
     public List<Engine> findAll(){
         return engineRepository.findAll();
     }
+
     @Cacheable(value = "enginesCache")
     public Engine findById(String id){
         return engineRepository.findById(id)
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find an engine with that id"));
     }
+
     @CachePut(value = "enginesCache", key = "#result.id")
     public Engine save(Engine engine){
         return engineRepository.save(engine);
     }
+
     @CachePut(value = "enginesCache", key = "#id")
     public void update(String id, Engine engine){
         if(!engineRepository.existsById(id)){
@@ -41,6 +44,7 @@ public class EngineService {
         engine.setId(id);
         engineRepository.save(engine);
     }
+
     @CacheEvict(value = "enginesCache", key = "#id")
     public void delete(String id){
         if(!engineRepository.existsById(id)){
