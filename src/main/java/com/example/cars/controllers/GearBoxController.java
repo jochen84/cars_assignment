@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController //REST API Endpoints
 @RequestMapping("/api/v1/gearboxes")
-@Slf4j
 public class GearBoxController {
 
     @Autowired
