@@ -38,11 +38,6 @@ public class AppUserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that username"));
     }
 
-    public AppUser findByPhone(String phone){
-        return appUserRepository.findByPhone(phone)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that phone"));
-    }
-
     @CachePut(value = "appUsersCache", key = "#result.id")
     public AppUser save(AppUser appUser){
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));

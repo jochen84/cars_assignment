@@ -28,26 +28,6 @@ public class EngineService {
         return engineRepository.findById(id)
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find an engine with that id"));
     }
-    @Cacheable(value = "enginesCache")
-    public List<Engine> findByFuel(String fuel){
-        return engineRepository.findByFuel(fuel)
-                .stream().collect(Collectors.toList());
-    }
-    @Cacheable(value = "enginesCache")
-    public List<Engine> findByIsSupercharged(boolean isSupercharged){
-        return engineRepository.findByIsSupercharged(isSupercharged)
-                .stream().collect(Collectors.toList());
-    }
-    @Cacheable(value = "enginesCache")
-    public List<Engine> findByEnginePosition(String enginePosition){
-        return engineRepository.findByEnginePosition(enginePosition)
-                .stream().collect(Collectors.toList());
-    }
-    @Cacheable(value = "enginesCache")
-    public List<Engine> findByCylinders(int cylinders){
-        return engineRepository.findByCylinders(cylinders)
-                .stream().collect(Collectors.toList());
-    }
     @CachePut(value = "enginesCache", key = "#result.id")
     public Engine save(Engine engine){
         return engineRepository.save(engine);
