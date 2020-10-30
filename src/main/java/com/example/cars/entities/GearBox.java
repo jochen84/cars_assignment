@@ -4,10 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 
 @Data
 public class GearBox {
@@ -16,7 +13,7 @@ public class GearBox {
     @NotEmpty(message = "Gearbox can not be empty")
     @Pattern(regexp = "Auto|Manual", message = "Gearbox must be Auto or Manual")
     private String gearBox;
-    @NotEmpty(message = "Total Gears can not be empty")
+    @NotNull(message = "Total Gears can not be empty")
     @Min(value = 4, message = "Total Gears should be no smaller than 4")
     @Max(value = 8, message = "Total Gears should be no larger than 8")
     private int totalGears;
