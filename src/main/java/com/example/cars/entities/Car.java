@@ -34,12 +34,12 @@ public class Car implements Serializable {
     @Max(value = 2020, message = "Production Year should be smaller than 2020")
     private int prodYear;
     @NotEmpty(message = "No. of Seats can not be empty")
-    @Min(value = 2, message = "No. of Seats should be no smaller than 2")
+    //@Min(value = 2, message = "No. of Seats should be no smaller than 2")
     @Max(value = 7, message = "No. of Seats should be no larger than 7")
     private int numOfSeats;
     private List<String> equipment;
-    @NotEmpty(message = "Engine info. can not be empty")
+    //@NotEmpty(message = "Engine info. can not be empty")
     private Engine engine;
-    @NotEmpty(message = "Gear info. can not be empty")
+    //@NotEmpty(message = "Gear info. can not be empty")
     private GearBox gearBox;
 }
