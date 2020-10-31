@@ -33,8 +33,6 @@ public class EngineService {
         }
         if(isSupercharged!=null){
             engines = engines.stream().filter(engine -> Boolean.toString(engine.isSupercharged()).equalsIgnoreCase(isSupercharged)).collect(Collectors.toList());
-//        }else {
-//            engines = engines.stream().filter(engine -> engine.isSupercharged() == false).collect(Collectors.toList());
         }if(enginePosition!=null){
             engines = engines.stream().filter(engine -> engine.getEnginePosition().equalsIgnoreCase(enginePosition)).collect(Collectors.toList());
         }

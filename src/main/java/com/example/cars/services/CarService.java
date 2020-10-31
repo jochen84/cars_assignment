@@ -4,11 +4,14 @@ import com.example.cars.entities.Car;
 import com.example.cars.repositories.CarRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -17,8 +20,74 @@ public class CarService {
 
     private final CarRepository carRepository;
 
-    public List<Car> findAll(){
-        return carRepository.findAll();
+//    public List<Car> findAll(){
+//        return carRepository.findAll();
+//    }
+    public List<Car> findAll(String regNum, String brand, String model, String color, String prodYear, String numOfSeats, String equipment, String fuel, String isSupercharged, String enginePosition, String cylinders, String gearBox, String totalGears, String driveLine,
+                             boolean sortByRegNum, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear, boolean sortByNumOfSeats/*, boolean sortByFuel, boolean sortByIsSupercharged, boolean sortByEnginePosition, boolean sortByCylinders, boolean sortByGearBox, boolean sortByTotalGears, boolean sortBydDriveLine*/){
+        log.info("Request to find all cars");
+        var cars = carRepository.findAll();
+        if(regNum!=null){
+            cars = cars.stream().filter(car -> car.getRegNum().equalsIgnoreCase(regNum)).collect(Collectors.toList());
+        }
+        if(brand!=null){
+            cars = cars.stream().filter(car -> car.getBrand().equalsIgnoreCase(brand)).collect(Collectors.toList());
+        }
+        if(model!=null){
+            cars = cars.stream().filter(car -> car.getModel().equalsIgnoreCase(model)).collect(Collectors.toList());
+        }
+        if(color!=null){
+            cars = cars.stream().filter(car -> car.getColor().equalsIgnoreCase(color)).collect(Collectors.toList());
+        }
+        if(prodYear!=null){
+            cars = cars.stream().filter(car -> Integer.toString(car.getProdYear()).equals(prodYear)).collect(Collectors.toList());
+        }
+        if(numOfSeats!=null){
+            cars = cars.stream().filter(car -> Integer.toString(car.getNumOfSeats()).equals(numOfSeats)).collect(Collectors.toList());
+        }
+        if(equipment!=null){
+            cars = cars.stream().filter(car -> car.getEquipment().contains(equipment)).collect(Collectors.toList());//***
+        }
+        if(fuel!=null){
+            cars = cars.stream().filter(car -> car.getEngine()!=null && car.getEngine().getFuel().equalsIgnoreCase(fuel)).collect(Collectors.toList());
+        }
+        if(isSupercharged!=null){
+            cars = cars.stream().filter(car -> car.getEngine()!=null && Boolean.toString(car.getEngine().isSupercharged()).equalsIgnoreCase(isSupercharged)).collect(Collectors.toList());
+        }
+        if(enginePosition!=null){
+            cars = cars.stream().filter(car -> car.getEngine()!=null && car.getEngine().getEnginePosition().equalsIgnoreCase(enginePosition)).collect(Collectors.toList());
+        }
+        if(cylinders!=null){
+            cars = cars.stream().filter(car -> car.getEngine()!=null && Integer.toString(car.getEngine().getCylinders()).equals(cylinders)).collect(Collectors.toList());
+        }
+        if(gearBox!=null){
+            cars = cars.stream().filter(car -> car.getGearBox()!=null && car.getGearBox().getGearBox().equalsIgnoreCase(gearBox)).collect(Collectors.toList());
+        }
+        if(totalGears!=null){
+            cars = cars.stream().filter(car -> car.getGearBox()!=null && Integer.toString(car.getGearBox().getTotalGears()).equals(totalGears)).collect(Collectors.toList());
+        }
+        if(driveLine!=null){
+            cars = cars.stream().filter(car -> car.getGearBox()!=null && car.getGearBox().getDriveLine().equalsIgnoreCase(driveLine)).collect(Collectors.toList());
+        }
+        if(sortByRegNum){
+            cars.sort(Comparator.comparing(Car::getRegNum));
+        }
+        if(sortByBrand){
+            cars.sort(Comparator.comparing(Car::getBrand));
+        }
+        if(sortByModel){
+            cars.sort(Comparator.comparing(Car::getModel));
+        }
+        if(sortByColor){
+            cars.sort(Comparator.comparing(Car::getColor));
+        }
+        if(sortByProdYear){
+            cars.sort(Comparator.comparing(Car::getProdYear));
+        }
+        if(sortByNumOfSeats){
+            cars.sort(Comparator.comparing(Car::getNumOfSeats));
+        }
+        return cars;
     }
 
     public Car findById(String id){
