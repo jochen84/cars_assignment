@@ -19,9 +19,12 @@ public class EngineController {
     private EngineService engineService;
 
     @GetMapping
-    public ResponseEntity<List<Engine>> findAllEngine(){
-        return ResponseEntity.ok(engineService.findAll());
+    public ResponseEntity<List<Engine>> findAllEngine(@RequestParam(required = false) String fuel, @RequestParam(required = false) String isSupercharged, @RequestParam(required = false)String enginePosition, @RequestParam(required = false)String cylinders, @RequestParam(required = false)boolean sortByFuel, @RequestParam(required = false)boolean sortByIsSupercharged, @RequestParam(required = false)boolean sortByEnginePosition, @RequestParam(required = false)boolean sortByCylinders){
+        return ResponseEntity.ok(engineService.findAll(fuel, isSupercharged, enginePosition, cylinders, sortByFuel, sortByIsSupercharged, sortByEnginePosition, sortByCylinders));
     }
+//    public ResponseEntity<List<Engine>> findAllEngine(){
+//        return ResponseEntity.ok(engineService.findAll());
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Engine> findById(@PathVariable String id){

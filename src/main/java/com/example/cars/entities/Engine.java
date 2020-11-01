@@ -15,7 +15,7 @@ public class Engine {
     private String fuel;
     private boolean isSupercharged;
     @NotEmpty(message = "Engine Position can not be empty")
-    @Pattern(regexp = "Front|Rear", message = "Engine Postion must be Front or Rear")
+    @Pattern(regexp = "Front|Rear", message = "Engine Position must be Front or Rear")
     private String enginePosition;
     @Min(value = 1, message = "Cylinders must be no smaller than 1.")
     @Max(value = 16, message = "Cylinders must be no larger than 16.")

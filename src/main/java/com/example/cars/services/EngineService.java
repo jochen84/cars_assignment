@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,19 +21,38 @@ import java.util.stream.Collectors;
 public class EngineService {
     private final EngineRepository engineRepository;
     @Cacheable(value = "enginesCache")
-    public List<Engine> findAll(){
-        log.info("Request to find all engines");
-        return engineRepository.findAll();
-    }
-
-//    public List<Engine> findAll(String fuel, boolean isSupercharged, String enginePosition, int cylinders, boolean sortByFuel, boolean sortByIsSupercharged, boolean sortByEnginePosition, boolean sortByCylinders){
+//    public List<Engine> findAll(){
 //        log.info("Request to find all engines");
-//        var engines = engineRepository.findAll();
-//        if(fuel!=null){
-//
-//        }
 //        return engineRepository.findAll();
 //    }
+    public List<Engine> findAll(String fuel, String isSupercharged, String enginePosition, String cylinders, boolean sortByFuel, boolean sortByIsSupercharged, boolean sortByEnginePosition, boolean sortByCylinders){
+        log.info("Request to find all engines");
+        var engines = engineRepository.findAll();
+        if(fuel!=null){
+            engines = engines.stream().filter(engine -> engine.getFuel().equalsIgnoreCase(fuel)).collect(Collectors.toList());
+        }
+        if(isSupercharged!=null){
+            engines = engines.stream().filter(engine -> Boolean.toString(engine.isSupercharged()).equalsIgnoreCase(isSupercharged)).collect(Collectors.toList());
+        }if(enginePosition!=null){
+            engines = engines.stream().filter(engine -> engine.getEnginePosition().equalsIgnoreCase(enginePosition)).collect(Collectors.toList());
+        }
+        if(cylinders!=null){
+            engines = engines.stream().filter(engine -> Integer.toString(engine.getCylinders()).equals(cylinders)).collect(Collectors.toList());
+        }
+        if(sortByFuel){
+            engines.sort(Comparator.comparing(Engine::getFuel));
+        }
+        if(sortByIsSupercharged){
+            engines.sort(Comparator.comparing(Engine::isSupercharged));
+        }
+        if(sortByEnginePosition){
+            engines.sort(Comparator.comparing(Engine::getEnginePosition));
+        }
+        if(sortByCylinders){
+            engines.sort(Comparator.comparing(Engine::getCylinders));
+        }
+        return engines;
+    }
 
     @Cacheable(value = "enginesCache")
     public Engine findById(String id){
