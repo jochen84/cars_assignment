@@ -24,6 +24,7 @@ public class EngineService {
         log.info("Request to find all engines");
         return engineRepository.findAll();
     }
+
 //    public List<Engine> findAll(String fuel, boolean isSupercharged, String enginePosition, int cylinders, boolean sortByFuel, boolean sortByIsSupercharged, boolean sortByEnginePosition, boolean sortByCylinders){
 //        log.info("Request to find all engines");
 //        var engines = engineRepository.findAll();
