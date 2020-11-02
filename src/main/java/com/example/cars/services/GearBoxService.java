@@ -1,5 +1,6 @@
 package com.example.cars.services;
 
+import com.example.cars.entities.Car;
 import com.example.cars.entities.GearBox;
 import com.example.cars.repositories.GearBoxRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -21,9 +24,32 @@ public class GearBoxService {
     private final GearBoxRepository gearBoxRepository;
 
     @Cacheable(value = "gearsCache")
-    public List<GearBox> findAll(){
+/*    public List<GearBox> findAll(){
         log.info("Request to find all gearboxes");
         return gearBoxRepository.findAll();
+    }*/
+    public List<GearBox> findAll(String gearBox, String totalGears, String driveLine, boolean sortByGearBox, boolean sortByTotalGears, boolean sortByDriveLine){
+        log.info("Request to find all gearboxes");
+        var gearboxes = gearBoxRepository.findAll();
+        if(gearBox!=null){
+            gearboxes = gearboxes.stream().filter(gearbox -> gearbox.getGearBox().equalsIgnoreCase(gearBox)).collect(Collectors.toList());
+        }
+        if(totalGears!=null){
+            gearboxes = gearboxes.stream().filter(gearbox -> Integer.toString(gearbox.getTotalGears()).equals(totalGears)).collect(Collectors.toList());
+        }
+        if(driveLine!=null){
+            gearboxes = gearboxes.stream().filter(gearbox -> gearbox.getDriveLine().equalsIgnoreCase(driveLine)).collect(Collectors.toList());
+        }
+        if(sortByGearBox){
+            gearboxes.sort(Comparator.comparing(GearBox::getGearBox));
+        }
+        if(sortByTotalGears){
+            gearboxes.sort(Comparator.comparing(GearBox::getTotalGears));
+        }
+        if(sortByDriveLine){
+            gearboxes.sort(Comparator.comparing(GearBox::getDriveLine));
+        }
+        return gearboxes;
     }
 
     @Cacheable(value = "gearsCache", key = "#id")

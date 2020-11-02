@@ -1,5 +1,6 @@
 package com.example.cars.controllers;
 
+import com.example.cars.entities.Engine;
 import com.example.cars.entities.GearBox;
 import com.example.cars.services.GearBoxService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +20,14 @@ public class GearBoxController {
     private GearBoxService gearBoxService;
 
     @GetMapping
+    public ResponseEntity<List<GearBox>> findAllGearBox(@RequestParam(required = false) String gearBox, @RequestParam(required = false) String totalGears, @RequestParam(required = false) String driveLine,
+                                                        @RequestParam(required = false) boolean sortByGearBox, @RequestParam(required = false) boolean sortByTotalGears, @RequestParam(required = false) boolean sortByDriveLine) {
+        return ResponseEntity.ok(gearBoxService.findAll(gearBox, totalGears, driveLine, sortByGearBox, sortByTotalGears, sortByDriveLine));
+    }
+/*    @GetMapping
     public ResponseEntity<List<GearBox>> findAll(@RequestParam(required = false) String name, @RequestParam(required = false) boolean sort) {
         return ResponseEntity.ok(gearBoxService.findAll());
-    }
+    }*/
 
     @GetMapping("/{id}")
     public ResponseEntity <GearBox> findById(@PathVariable String id) {
