@@ -4,6 +4,8 @@ import com.example.cars.entities.Car;
 import com.example.cars.repositories.CarRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.data.convert.Jsr310Converters;
 import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,9 +23,6 @@ public class CarService {
 
     private final CarRepository carRepository;
 
-//    public List<Car> findAll(){
-//        return carRepository.findAll();
-//    }
     public List<Car> findAll(String regNum, String brand, String model, String color, String prodYear, String numOfSeats, String equipment, String fuel, String isSupercharged, String enginePosition, String cylinders, String gearBox, String totalGears, String driveLine,
                              boolean sortByRegNum, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear, boolean sortByNumOfSeats/*, boolean sortByFuel, boolean sortByIsSupercharged, boolean sortByEnginePosition, boolean sortByCylinders, boolean sortByGearBox, boolean sortByTotalGears, boolean sortBydDriveLine*/){
         log.info("Request to find all cars");
@@ -89,9 +88,6 @@ public class CarService {
         if(sortByNumOfSeats){
             cars.sort(Comparator.comparing(Car::getNumOfSeats));
         }
-        if (loggedIn == "anonymousUser"){
-
-        }
         return cars;
     }
 
@@ -117,6 +113,38 @@ public class CarService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id");
         }
         carRepository.deleteById(id);
+    }
+
+    public List<String> findAllRestricted(String brand, String model, String color, String prodYear, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear){
+        List<String> test;
+        var cars = carRepository.findAll();
+        if(brand!=null){
+            cars = cars.stream().filter(car -> car.getBrand().equalsIgnoreCase(brand)).collect(Collectors.toList());
+        }
+        if(model!=null){
+            cars = cars.stream().filter(car -> car.getModel().equalsIgnoreCase(model)).collect(Collectors.toList());
+        }
+        if(color!=null){
+            cars = cars.stream().filter(car -> car.getColor().equalsIgnoreCase(color)).collect(Collectors.toList());
+        }
+        if(prodYear!=null){
+            cars = cars.stream().filter(car -> Integer.toString(car.getProdYear()).equals(prodYear)).collect(Collectors.toList());
+        }
+        if(sortByBrand){
+            cars.sort(Comparator.comparing(Car::getBrand));
+        }
+        if(sortByModel){
+            cars.sort(Comparator.comparing(Car::getModel));
+        }
+        if(sortByColor){
+            cars.sort(Comparator.comparing(Car::getColor));
+        }
+        if(sortByProdYear){
+            cars.sort(Comparator.comparing(Car::getProdYear));
+        }
+        test = cars.stream()
+                .map(car -> car.getBrand()+"+"+car.getModel()).collect(Collectors.toList());
+        return test;
     }
 
 }
