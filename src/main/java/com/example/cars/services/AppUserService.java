@@ -30,6 +30,11 @@ public class AppUserService {
 
     @Cacheable(value = "appUsersCache", key = "#id")
     public AppUser findById(String id){
+        var isSuperman = checkAuthority("ADMIN") || checkAuthority("CARDEALER");
+        var isCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName().toLowerCase().equals(appUserRepository.findById(id).get().getUsername());
+        if (!isSuperman && !isCurrentUser) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authorized! You can only view your own details");
+        }
         return appUserRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that id"));
     }
@@ -67,13 +72,17 @@ public class AppUserService {
         if (!appUserRepository.existsById(id)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that id");
         }
-        var currentUser = appUserRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         var isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().toUpperCase().equals("ROLE_ADMIN"));
-        var isCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName().toLowerCase().equals(currentUser.get().getUsername());
+        var isCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName().toLowerCase().equals(appUserRepository.findById(id).get().getUsername());
         if (!isAdmin && !isCurrentUser) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authorized! You can only delete your own details");
         }
         appUserRepository.deleteById(id);
+    }
+
+    private boolean checkAuthority(String role){
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().toUpperCase().equals("ROLE_"+role));
     }
 }

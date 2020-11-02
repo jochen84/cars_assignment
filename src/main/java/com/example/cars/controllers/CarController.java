@@ -17,7 +17,6 @@ public class CarController {
     @Autowired
     private CarService carService;
 
-    @Secured({"ROLE_ADMIN", "ROLE_CARDEALER", "ROLE_USER"})
     @GetMapping
 //    public ResponseEntity<List<Car>> findAll(){
 //        return ResponseEntity.ok(carService.findAll());
