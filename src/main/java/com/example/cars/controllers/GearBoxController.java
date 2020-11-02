@@ -31,27 +31,27 @@ public class GearBoxController {
     }*/
 
     @GetMapping("/{id}")
-    @Secured({"ROLE_ADMIN"})
+    @Secured({"ROLE_ADMIN", "ROLE_CARDEALER"})
     public ResponseEntity <GearBox> findById(@PathVariable String id) {
         return ResponseEntity.ok(gearBoxService.findById(id));
     }
 
     @PostMapping
-    @Secured({"ROLE_ADMIN"})
+    @Secured({"ROLE_ADMIN", "ROLE_CARDEALER"})
     public ResponseEntity<GearBox> save(@Validated @RequestBody GearBox gearBox) {
         return ResponseEntity.ok(gearBoxService.save(gearBox));
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Secured({"ROLE_ADMIN"})
+    @Secured({"ROLE_ADMIN", "ROLE_CARDEALER"})
     public void update(@Validated @PathVariable String id, @RequestBody GearBox gearBox) {
         gearBoxService.update(id, gearBox);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Secured({"ROLE_ADMIN"})
+    @Secured({"ROLE_ADMIN", "ROLE_CARDEALER"})
     public void delete(@PathVariable String id) {
         gearBoxService.delete(id);
     }
