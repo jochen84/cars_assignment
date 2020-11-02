@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -26,6 +27,7 @@ public class CarService {
     public List<Car> findAll(String regNum, String brand, String model, String color, String prodYear, String numOfSeats, String equipment, String fuel, String isSupercharged, String enginePosition, String cylinders, String gearBox, String totalGears, String driveLine,
                              boolean sortByRegNum, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear, boolean sortByNumOfSeats/*, boolean sortByFuel, boolean sortByIsSupercharged, boolean sortByEnginePosition, boolean sortByCylinders, boolean sortByGearBox, boolean sortByTotalGears, boolean sortBydDriveLine*/){
         log.info("Request to find all cars");
+        var loggedIn = SecurityContextHolder.getContext().getAuthentication().getName();
         var cars = carRepository.findAll();
         if(regNum!=null){
             cars = cars.stream().filter(car -> car.getRegNum().equalsIgnoreCase(regNum)).collect(Collectors.toList());
@@ -86,6 +88,9 @@ public class CarService {
         }
         if(sortByNumOfSeats){
             cars.sort(Comparator.comparing(Car::getNumOfSeats));
+        }
+        if (loggedIn == "anonymousUser"){
+
         }
         return cars;
     }
