@@ -17,7 +17,7 @@ public class CarController {
     @Autowired
     private CarService carService;
 
-    @Secured({"ROLE_ADMIN", "ROLE_CARDEALER", "ROLE_USER"})
+    @Secured({"ROLE_ADMIN", "ROLE_CARDEALER"})
     @GetMapping
 //    public ResponseEntity<List<Car>> findAll(){
 //        return ResponseEntity.ok(carService.findAll());
@@ -27,7 +27,7 @@ public class CarController {
         return ResponseEntity.ok(carService.findAll(regNum, brand, model, color, prodYear, numOfSeats, equipment, fuel, isSupercharged, enginePosition, cylinders, gearBox, totalGears, driveLine, sortByRegNum, sortByBrand, sortByModel, sortByColor, sortByProdYear, sortByNumOfSeats));
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_CARDEALER", "ROLE_USER"})
+    @Secured({"ROLE_ADMIN", "ROLE_CARDEALER"})
     @GetMapping("/{id}")
     public ResponseEntity<Car> findById(@PathVariable String id){
         return ResponseEntity.ok(carService.findById(id));
