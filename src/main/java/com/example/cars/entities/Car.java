@@ -34,8 +34,13 @@ public class Car implements Serializable {
     @Max(value = 7, message = "No. of Seats should be no larger than 7")
     private int numOfSeats;
     private List<String> equipment;
+    @NotNull
     @DBRef
     private Engine engine;
+    @NotNull
     @DBRef
     private GearBox gearBox;
+    @Pattern(regexp = "Instock|Reserved|Sold", message = "Available strings are Instock|Reserved|Sold")
+    private String status;
+    private AppUser reservedByAppUser;
 }
