@@ -90,7 +90,15 @@ public class CarService {
             cars.sort(Comparator.comparing(Car::getNumOfSeats));
         }
         if (loggedIn == "anonymousUser"){
+            cars = cars.stream().filter(car -> car.getBrand()!=null) +
+                   cars.stream().filter(car -> car.getModel()!=null) +
+                   cars.stream().filter(car -> car.getProdYear()!="").collect(Collectors.toList());
+/*            cars = cars.stream().filter(car -> car.getModel()!=null).collect(Collectors.toList());
+            cars = cars.stream().filter(car -> car.getProdYear()!=null).collect(Collectors.toList());*/
 
+/*            cars = cars.stream().filter(car -> car.getBrand()!=null).collect(Collectors.toList());
+            cars = cars.stream().filter(car -> car.getModel()!=null).collect(Collectors.toList());
+            cars = cars.stream().filter(car -> car.getProdYear()!=null).collect(Collectors.toList());*/
         }
         return cars;
     }
