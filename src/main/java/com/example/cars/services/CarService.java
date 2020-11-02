@@ -8,6 +8,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.convert.Jsr310Converters;
 import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,11 +23,11 @@ import java.util.stream.Collectors;
 public class CarService {
 
     private final CarRepository carRepository;
+    private final AppUserService appUserService;
 
     public List<Car> findAll(String regNum, String brand, String model, String color, String prodYear, String numOfSeats, String equipment, String fuel, String isSupercharged, String enginePosition, String cylinders, String gearBox, String totalGears, String driveLine,
                              boolean sortByRegNum, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear, boolean sortByNumOfSeats/*, boolean sortByFuel, boolean sortByIsSupercharged, boolean sortByEnginePosition, boolean sortByCylinders, boolean sortByGearBox, boolean sortByTotalGears, boolean sortBydDriveLine*/){
         log.info("Request to find all cars");
-        var loggedIn = SecurityContextHolder.getContext().getAuthentication().getName();
         var cars = carRepository.findAll();
         if(regNum!=null){
             cars = cars.stream().filter(car -> car.getRegNum().equalsIgnoreCase(regNum)).collect(Collectors.toList());
@@ -116,7 +117,7 @@ public class CarService {
     }
 
     public List<String> findAllRestricted(String brand, String model, String color, String prodYear, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear){
-        List<String> test;
+        List<String> restrictedCarList;
         var cars = carRepository.findAll();
         if(brand!=null){
             cars = cars.stream().filter(car -> car.getBrand().equalsIgnoreCase(brand)).collect(Collectors.toList());
@@ -142,9 +143,21 @@ public class CarService {
         if(sortByProdYear){
             cars.sort(Comparator.comparing(Car::getProdYear));
         }
-        test = cars.stream()
+        restrictedCarList = cars.stream()
                 .map(car -> car.getBrand()+"+"+car.getModel()).collect(Collectors.toList());
-        return test;
+        return restrictedCarList;
+    }
+
+    public void reserveCar(String id){
+        var currentUser = appUserService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        var car = findById(id);
+        //if (bilenintefinns){}
+
+        car.setId(id);
+        car.setStatus("Reserved");
+        car.setReservedByAppUser(currentUser);
+        update(id, car);
+
     }
 
 }
