@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -50,6 +51,12 @@ public class AppUserService {
             log.error("Could not find a user with that id");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that id");
         }
+        var isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().toUpperCase().equals("ROLE_ADMIN"));
+        var isCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName().toLowerCase().equals(appUser.getUsername().toLowerCase());
+        if (!isAdmin && !isCurrentUser) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authorized! You can only update your own details");
+        }
         appUser.setId(id);
         //appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         appUserRepository.save(appUser);
@@ -59,6 +66,13 @@ public class AppUserService {
     public void delete(String id){
         if (!appUserRepository.existsById(id)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that id");
+        }
+        var currentUser = appUserRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        var isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().toUpperCase().equals("ROLE_ADMIN"));
+        var isCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName().toLowerCase().equals(currentUser.get().getUsername());
+        if (!isAdmin && !isCurrentUser) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authorized! You can only delete your own details");
         }
         appUserRepository.deleteById(id);
     }

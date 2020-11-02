@@ -13,16 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthenticationEntryPoint entryPoint;
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        super.configure(auth);
-    }
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -30,6 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/open/**").permitAll()
+                .antMatchers("/api/v1/users/**").authenticated()
                 .antMatchers("/api/**").permitAll()
                 .and()
                 .httpBasic().authenticationEntryPoint(entryPoint)
