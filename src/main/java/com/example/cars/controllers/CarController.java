@@ -30,9 +30,16 @@ public class CarController {
         return ResponseEntity.ok(carService.findAllRestricted(brand, model, color, prodYear, sortByBrand, sortByModel, sortByColor, sortByProdYear));
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_CARDEALER", "ROLE_USER"})
     @PutMapping("/reserve/{id}")
     public void reserveCar(@PathVariable String id){
         carService.reserveCar(id);
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_CARDEALER", "ROLE_USER"})
+    @PutMapping("/unreserve/{id}")
+    public void unReserveCar(@PathVariable String id){
+        carService.unReserveCar(id);
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_CARDEALER", "ROLE_USER"})

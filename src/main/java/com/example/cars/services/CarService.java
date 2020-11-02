@@ -149,15 +149,40 @@ public class CarService {
     }
 
     public void reserveCar(String id){
+        //if (SecurityContextHolder.getContext().getAuthentication().getName() == "anonymousUser"){
+        //    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must log in to reserve a car");
+        //}
         var currentUser = appUserService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         var car = findById(id);
-        //if (bilenintefinns){}
-
+        if (car.getStatus().equals("Reserved") || car.getStatus().equals("Sold")){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "That car is already reserved or sold");
+        }
         car.setId(id);
         car.setStatus("Reserved");
         car.setReservedByAppUser(currentUser);
         update(id, car);
-
     }
 
+    public void unReserveCar(String id){
+        var car = findById(id);
+        var currentReserveUser = car.getReservedByAppUser();
+        var currentLoggedInUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        var isSuperman = checkAuthority("ADMIN")||checkAuthority("CARDEALER");
+        if (!car.getStatus().equals("Reserved")){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Car is not reserved at the moment");
+        }
+        if (!isSuperman && !currentReserveUser.getUsername().equals(currentLoggedInUser)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authorized to do this");
+        }
+
+        car.setId(id);
+        car.setStatus("Instock");
+        car.setReservedByAppUser(null);
+        update(id, car);
+    }
+
+    private boolean checkAuthority(String role){
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().toUpperCase().equals("ROLE_"+role));
+    }
 }
