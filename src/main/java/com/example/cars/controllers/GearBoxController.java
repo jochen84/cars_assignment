@@ -20,6 +20,7 @@ public class GearBoxController {
     private GearBoxService gearBoxService;
 
     @GetMapping
+    @Secured({"ROLE_ADMIN", "ROLE_CARDEALER"})
     public ResponseEntity<List<GearBox>> findAllGearBox(@RequestParam(required = false) String gearBox, @RequestParam(required = false) String totalGears, @RequestParam(required = false) String driveLine,
                                                         @RequestParam(required = false) boolean sortByGearBox, @RequestParam(required = false) boolean sortByTotalGears, @RequestParam(required = false) boolean sortByDriveLine) {
         return ResponseEntity.ok(gearBoxService.findAll(gearBox, totalGears, driveLine, sortByGearBox, sortByTotalGears, sortByDriveLine));
@@ -30,23 +31,27 @@ public class GearBoxController {
     }*/
 
     @GetMapping("/{id}")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity <GearBox> findById(@PathVariable String id) {
         return ResponseEntity.ok(gearBoxService.findById(id));
     }
 
     @PostMapping
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<GearBox> save(@Validated @RequestBody GearBox gearBox) {
         return ResponseEntity.ok(gearBoxService.save(gearBox));
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Secured({"ROLE_ADMIN"})
     public void update(@Validated @PathVariable String id, @RequestBody GearBox gearBox) {
         gearBoxService.update(id, gearBox);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Secured({"ROLE_ADMIN"})
     public void delete(@PathVariable String id) {
         gearBoxService.delete(id);
     }
