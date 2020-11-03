@@ -99,16 +99,20 @@ public class CarService {
     }
 
     public Car findById(String id){
+        log.info("Request to find car by id");
         return carRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id"));
     }
 
     public Car save(Car car){
+        log.info("Request to save car");
         return carRepository.save(car);
     }
 
     public void update(String id, Car car){
+        log.info("Request to update car");
         if (!carRepository.existsById(id)){
+            log.error(String.format("Could not find car with id %s.", id));
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id");
         }
         car.setId(id);
@@ -116,13 +120,16 @@ public class CarService {
     }
 
     public void delete(String id){
+        log.info("Request to delete car");
         if (!carRepository.existsById(id)){
+            log.error(String.format("Could not find car with id %s.", id));
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id");
         }
         carRepository.deleteById(id);
     }
 
     public List<String> findAllRestricted(String brand, String model, String color, String prodYear, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear){
+        log.info("Request to find cars for anonymous user");
         List<String> restrictedCarList;
         var cars = carRepository.findAll();
         if(brand!=null){
@@ -155,12 +162,14 @@ public class CarService {
     }
 
     public void reserveCar(String id){
+        log.info("Request to reserve car");
         //if (SecurityContextHolder.getContext().getAuthentication().getName() == "anonymousUser"){
         //    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must log in to reserve a car");
         //}
         var currentUser = appUserService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         var car = findById(id);
         if (car.getStatus().equals("Reserved") || car.getStatus().equals("Sold")){
+            log.error(String.format("Car with id %s.", id, " is already reserved or sold"));
             throw new ResponseStatusException(HttpStatus.CONFLICT, "That car is already reserved or sold");
         }
         car.setId(id);
@@ -170,11 +179,13 @@ public class CarService {
     }
 
     public void unReserveCar(String id){
+        log.info("Request to remove reservation of car");
         var car = findById(id);
         var currentReserveUser = car.getReservedByAppUser();
         var currentUserNameLoggedInUser = SecurityContextHolder.getContext().getAuthentication().getName();
         var isSuperman = checkAuthority("ADMIN")||checkAuthority("CARDEALER");
         if (!car.getStatus().equals("Reserved")){
+            log.error(String.format("Car is not reserved at the moment."));
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Car is not reserved at the moment");
         }
         if (!isSuperman && !currentReserveUser.getUsername().equals(currentUserNameLoggedInUser)){
@@ -188,8 +199,10 @@ public class CarService {
     }
 
     public void changeStatus(String id, String status){
+        log.info("Request to change status of car");
         var car = findById(id);
         if (!status.equals("Reserved") && !status.equals("Instock") && !status.equals("Sold")){
+            log.error(String.format("Available status is Reserved|Instock|Sold."));
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Available status is Reserved|Instock|Sold");
         }
         car.setId(id);

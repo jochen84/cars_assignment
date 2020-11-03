@@ -56,17 +56,20 @@ public class EngineService {
 
     @Cacheable(value = "enginesCache")
     public Engine findById(String id){
+        log.info("Request to find engine by id");
         return engineRepository.findById(id)
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find an engine with that id"));
     }
 
     @CachePut(value = "enginesCache", key = "#result.id")
     public Engine save(Engine engine){
+        log.info("Request to save engine");
         return engineRepository.save(engine);
     }
 
     @CachePut(value = "enginesCache", key = "#id")
     public void update(String id, Engine engine){
+        log.info("Request to update engine");
         if(!engineRepository.existsById(id)){
             log.error("Could not find an engine with that id");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find an engine with that id");
@@ -77,6 +80,7 @@ public class EngineService {
 
     @CacheEvict(value = "enginesCache", key = "#id")
     public void delete(String id){
+        log.info("Request to delete engine");
         if(!engineRepository.existsById(id)){
             log.error("Could not find an engine with that id");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find an engine with that id");

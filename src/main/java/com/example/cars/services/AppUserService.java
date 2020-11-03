@@ -30,9 +30,11 @@ public class AppUserService {
 
     @Cacheable(value = "appUsersCache", key = "#id")
     public AppUser findById(String id){
+        log.info("Request to find user by id");
         var isSuperman = checkAuthority("ADMIN") || checkAuthority("CARDEALER");
         var isCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName().toLowerCase().equals(appUserRepository.findById(id).get().getUsername());
         if (!isSuperman && !isCurrentUser) {
+            log.error(String.format("You are not authorized to see id %s.", id));
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authorized! You can only view your own details");
         }
         return appUserRepository.findById(id)
@@ -40,18 +42,21 @@ public class AppUserService {
     }
 
     public AppUser findByUsername(String username){
+        log.info("Request to find user by username");
         return appUserRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that username"));
     }
 
     @CachePut(value = "appUsersCache", key = "#result.id")
     public AppUser save(AppUser appUser){
+        log.info("Request to save user");
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         return appUserRepository.save(appUser);
     }
 
     @CachePut(value = "appUsersCache", key = "#id")
     public void update(String id, AppUser appUser){
+        log.info("Request to update user");
         if (!appUserRepository.existsById(id)){
             log.error("Could not find a user with that id");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that id");
@@ -69,7 +74,9 @@ public class AppUserService {
 
     @CacheEvict(value = "appUserCache", key = "#id")
     public void delete(String id){
+        log.info("Request to delete user");
         if (!appUserRepository.existsById(id)){
+            log.error(String.format("Could not find user with id %s.", id));
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that id");
         }
         var isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()

@@ -54,17 +54,20 @@ public class GearBoxService {
 
     @Cacheable(value = "gearsCache", key = "#id")
     public GearBox findById(String id){
+        log.info("Request to find gearbox by id");
         return gearBoxRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a gearbox with that id"));
     }
 
     @CachePut(value = "gearsCache", key = "#result.id")
     public GearBox save(GearBox gearBox){
+        log.info("Request to save gearbox");
         return gearBoxRepository.save(gearBox);
     }
 
     @CachePut(value = "gearsCache", key = "#id")
     public void update(String id, GearBox gearBox){
+        log.info("Request to update gearbox");
         if (!gearBoxRepository.existsById(id)){
             log.error("Could not find a gearbox with that id");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a gearbox with that id");
@@ -74,7 +77,9 @@ public class GearBoxService {
     }
     @CacheEvict(value = "gearsCache", key = "#id")
     public void delete(String id){
+        log.info("Request to delete gearbox");
         if (!gearBoxRepository.existsById(id)){
+            log.error("Could not find a gearbox with that id");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a gearbox with that id");
         }
         gearBoxRepository.deleteById(id);
