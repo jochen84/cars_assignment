@@ -24,10 +24,6 @@ public class GearBoxService {
     private final GearBoxRepository gearBoxRepository;
 
     @Cacheable(value = "gearsCache")
-/*    public List<GearBox> findAll(){
-        log.info("Request to find all gearboxes");
-        return gearBoxRepository.findAll();
-    }*/
     public List<GearBox> findAll(String gearBox, String totalGears, String driveLine, boolean sortByGearBox, boolean sortByTotalGears, boolean sortByDriveLine){
         log.info("Request to find all gearboxes");
         var gearboxes = gearBoxRepository.findAll();

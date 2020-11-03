@@ -13,7 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -23,9 +25,23 @@ public class AppUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Cacheable(value = "appUsersCache")
-    public List<AppUser> findAll(){
+    public List<AppUser> findAll(String name, String mail, boolean sortByName){
         log.info("Request to find all users");
-        return appUserRepository.findAll();
+        var users = appUserRepository.findAll();
+        if (name != null) {
+            users.stream()
+                    .filter(appUser -> appUser.getUsername().toLowerCase().contains(name) || appUser.getFirstname().toLowerCase().contains(name) || appUser.getLastname().toLowerCase().contains(name))
+                    .collect(Collectors.toList());
+        }
+        if (mail != null){
+            users.stream()
+                    .filter(appUser -> appUser.getMail().equalsIgnoreCase(mail))
+                    .collect(Collectors.toList());
+        }
+        if (sortByName){
+            users.sort(Comparator.comparing(AppUser::getLastname));
+        }
+        return users;
     }
 
     @Cacheable(value = "appUsersCache", key = "#id")
@@ -62,8 +78,10 @@ public class AppUserService {
         if (!isAdmin && !isCurrentUser) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authorized! You can only update your own details");
         }
+        if (appUser.getPassword().length() <= 16) {
+            appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
+        }
         appUser.setId(id);
-        //appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         appUserRepository.save(appUser);
     }
 

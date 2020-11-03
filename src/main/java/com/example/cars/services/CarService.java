@@ -26,7 +26,7 @@ public class CarService {
     private final AppUserService appUserService;
 
     public List<Car> findAll(String regNum, String brand, String model, String color, String prodYear, String numOfSeats, String equipment, String fuel, String isSupercharged, String enginePosition, String cylinders, String gearBox, String totalGears, String driveLine, String status,
-                             boolean sortByRegNum, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear, boolean sortByNumOfSeats, boolean sortByStatus){
+                             boolean sortByRegNum, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear, boolean sortByNumOfSeats, boolean sortByStatus, boolean sortByPrice){
         log.info("Request to find all cars");
         var cars = carRepository.findAll();
         if(regNum!=null){
@@ -47,8 +47,11 @@ public class CarService {
         if(numOfSeats!=null){
             cars = cars.stream().filter(car -> Integer.toString(car.getNumOfSeats()).equals(numOfSeats)).collect(Collectors.toList());
         }
+        if(status!=null){
+            cars = cars.stream().filter(car -> car.getStatus().equalsIgnoreCase(status)).collect(Collectors.toList());
+        }
         if(equipment!=null){
-            cars = cars.stream().filter(car -> car.getEquipment().contains(equipment)).collect(Collectors.toList());//***
+            cars = cars.stream().filter(car -> car.getEquipment().contains(equipment)).collect(Collectors.toList());
         }
         if(fuel!=null){
             cars = cars.stream().filter(car -> car.getEngine()!=null && car.getEngine().getFuel().equalsIgnoreCase(fuel)).collect(Collectors.toList());
@@ -71,9 +74,6 @@ public class CarService {
         if(driveLine!=null){
             cars = cars.stream().filter(car -> car.getGearBox()!=null && car.getGearBox().getDriveLine().equalsIgnoreCase(driveLine)).collect(Collectors.toList());
         }
-        if(status!=null){
-            cars = cars.stream().filter(car -> car.getStatus().equalsIgnoreCase(status)).collect(Collectors.toList());
-        }
         if(sortByRegNum){
             cars.sort(Comparator.comparing(Car::getRegNum));
         }
@@ -94,6 +94,9 @@ public class CarService {
         }
         if(sortByStatus){
             cars.sort(Comparator.comparing(Car::getStatus));
+        }
+        if (sortByPrice){
+            cars.sort(Comparator.comparing(Car::getPrice));
         }
         return cars;
     }
@@ -155,9 +158,9 @@ public class CarService {
     }
 
     public void reserveCar(String id){
-        //if (SecurityContextHolder.getContext().getAuthentication().getName() == "anonymousUser"){
-        //    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must log in to reserve a car");
-        //}
+        if (SecurityContextHolder.getContext().getAuthentication().getName() == "anonymousUser"){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must log in to reserve a car");
+        }
         var currentUser = appUserService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         var car = findById(id);
         if (car.getStatus().equals("Reserved") || car.getStatus().equals("Sold")){
