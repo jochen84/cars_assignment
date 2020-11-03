@@ -33,6 +33,7 @@ public class Car implements Serializable {
     @Min(value = 2, message = "No. of Seats should be no smaller than 2")
     @Max(value = 7, message = "No. of Seats should be no larger than 7")
     private int numOfSeats;
+    private int price;
     private List<String> equipment;
     @NotNull
     @DBRef
