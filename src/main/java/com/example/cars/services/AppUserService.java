@@ -25,7 +25,7 @@ public class AppUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Cacheable(value = "appUsersCache")
-    public List<AppUser> findAll(String name, String mail, boolean sortByName){
+    public List<AppUser> findAll(String name, String mail, boolean sortByName) {
         log.info("Request to find all users");
         var users = appUserRepository.findAll();
         if (name != null) {
@@ -33,19 +33,19 @@ public class AppUserService {
                     .filter(appUser -> appUser.getUsername().toLowerCase().contains(name) || appUser.getFirstname().toLowerCase().contains(name) || appUser.getLastname().toLowerCase().contains(name))
                     .collect(Collectors.toList());
         }
-        if (mail != null){
+        if (mail != null) {
             users.stream()
                     .filter(appUser -> appUser.getMail().equalsIgnoreCase(mail))
                     .collect(Collectors.toList());
         }
-        if (sortByName){
+        if (sortByName) {
             users.sort(Comparator.comparing(AppUser::getLastname));
         }
         return users;
     }
 
     @Cacheable(value = "appUsersCache", key = "#id")
-    public AppUser findById(String id){
+    public AppUser findById(String id) {
         var isSuperman = checkAuthority("ADMIN") || checkAuthority("CARDEALER");
         var isCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName().toLowerCase().equals(appUserRepository.findById(id).get().getUsername());
         if (!isSuperman && !isCurrentUser) {
@@ -55,20 +55,20 @@ public class AppUserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that id"));
     }
 
-    public AppUser findByUsername(String username){
+    public AppUser findByUsername(String username) {
         return appUserRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that username"));
     }
 
     @CachePut(value = "appUsersCache", key = "#result.id")
-    public AppUser save(AppUser appUser){
+    public AppUser save(AppUser appUser) {
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         return appUserRepository.save(appUser);
     }
 
     @CachePut(value = "appUsersCache", key = "#id")
-    public void update(String id, AppUser appUser){
-        if (!appUserRepository.existsById(id)){
+    public void update(String id, AppUser appUser) {
+        if (!appUserRepository.existsById(id)) {
             log.error("Could not find a user with that id");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that id");
         }
@@ -86,8 +86,8 @@ public class AppUserService {
     }
 
     @CacheEvict(value = "appUserCache", key = "#id")
-    public void delete(String id){
-        if (!appUserRepository.existsById(id)){
+    public void delete(String id) {
+        if (!appUserRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that id");
         }
         var isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
@@ -99,8 +99,8 @@ public class AppUserService {
         appUserRepository.deleteById(id);
     }
 
-    private boolean checkAuthority(String role){
+    private boolean checkAuthority(String role) {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().toUpperCase().equals("ROLE_"+role));
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().toUpperCase().equals("ROLE_" + role));
     }
 }

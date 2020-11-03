@@ -1,15 +1,14 @@
 package com.example.cars.controllers;
 
-import com.example.cars.entities.Engine;
 import com.example.cars.entities.GearBox;
 import com.example.cars.services.GearBoxService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController //REST API Endpoints
@@ -32,7 +31,7 @@ public class GearBoxController {
 
     @GetMapping("/{id}")
     @Secured({"ROLE_ADMIN", "ROLE_CARDEALER"})
-    public ResponseEntity <GearBox> findById(@PathVariable String id) {
+    public ResponseEntity<GearBox> findById(@PathVariable String id) {
         return ResponseEntity.ok(gearBoxService.findById(id));
     }
 

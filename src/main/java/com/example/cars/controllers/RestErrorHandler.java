@@ -17,10 +17,10 @@ public class RestErrorHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         var entityErrors = ex.getBindingResult().getFieldErrors().stream()
                 .map(fieldError -> EntityError.builder()
-                    .field(fieldError.getField())
-                    .message(fieldError.getDefaultMessage())
-                    .rejectedValue(String.valueOf(fieldError.getRejectedValue()))
-                .build())
+                        .field(fieldError.getField())
+                        .message(fieldError.getDefaultMessage())
+                        .rejectedValue(String.valueOf(fieldError.getRejectedValue()))
+                        .build())
                 .collect(Collectors.toList());
 
         return ResponseEntity.status(status).headers(headers).body(entityErrors);
