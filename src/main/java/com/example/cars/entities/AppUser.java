@@ -37,7 +37,7 @@ public class AppUser implements Serializable {
     @NotBlank(message = "Username must contain a value ")
     @Indexed(unique = true) //Not working?
     private String username;
-    @Size(min = 4, max = 12, message = "Password length invalid, must be between 4 and 12")
+    @Size(min = 4, max = 20, message = "Password length invalid, must be between 4 and 12")
     @NotBlank(message = "Password must contain a value ")
     @JsonIgnore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
