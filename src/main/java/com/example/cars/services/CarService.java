@@ -166,12 +166,12 @@ public class CarService {
     public void unReserveCar(String id){
         var car = findById(id);
         var currentReserveUser = car.getReservedByAppUser();
-        var currentLoggedInUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        var currentUserNameLoggedInUser = SecurityContextHolder.getContext().getAuthentication().getName();
         var isSuperman = checkAuthority("ADMIN")||checkAuthority("CARDEALER");
         if (!car.getStatus().equals("Reserved")){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Car is not reserved at the moment");
         }
-        if (!isSuperman && !currentReserveUser.getUsername().equals(currentLoggedInUser)){
+        if (!isSuperman && !currentReserveUser.getUsername().equals(currentUserNameLoggedInUser)){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authorized to do this");
         }
 
