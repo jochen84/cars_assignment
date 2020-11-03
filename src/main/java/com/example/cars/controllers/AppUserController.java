@@ -20,8 +20,8 @@ public class AppUserController {
 
     @Secured({"ROLE_ADMIN", "ROLE_CARDEALER"})
     @GetMapping
-    public ResponseEntity<List<AppUser>> findAllUsers(@RequestParam(required = false) String name, @RequestParam(required = false) String mail, @RequestParam(required = false) boolean sortByName) {
-        return ResponseEntity.ok(appUserService.findAll(name, mail, sortByName));
+    public ResponseEntity<List<AppUser>> findAllUsers(@RequestParam(required = false) String name, @RequestParam(required = false) String email, @RequestParam(required = false) boolean sortByName) {
+        return ResponseEntity.ok(appUserService.findAll(name, email, sortByName));
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_CARDEALER", "ROLE_USER"})

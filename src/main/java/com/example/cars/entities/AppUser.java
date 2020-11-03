@@ -20,24 +20,24 @@ public class AppUser implements Serializable {
     @Id
     private String id;  // for mongodb
     @NotEmpty(message = "Firstname can not be empty")
-    @Size(min = 2, max = 10, message = "Firstname length not valid")
+    @Size(min = 2, max = 14, message = "Firstname length not valid, must be between 2 and 14")
     private String firstname;
     @NotEmpty(message = "Lastname can not be empty")
-    @Size(min = 2, max = 10, message = "Lastname length not valid")
+    @Size(min = 2, max = 20, message = "Lastname length not valid, must be between 2 and 20")
     private String lastname;
-    @Past(message = "Birthday can not be present or in the future")
+    @PastOrPresent(message = "Birthday can not be present or in the future")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
     private LocalDate birthday;
     @Email(message = "E-mail address invalid")
-    private String mail;
+    private String email;
     @Pattern(regexp = "([0-9]){2,4}-([0-9]){5,8}", message = "Phone number not valid")
     private String phone;
-    @Size(min = 4, max = 10, message = "Username length invalid")
+    @Size(min = 3, max = 12, message = "Username length invalid, must be between 3 and 12")
     @NotBlank(message = "Username must contain a value ")
-    @Indexed(unique = true)
+    @Indexed(unique = true) //Not working?
     private String username;
-    @Size(min = 4, max = 10, message = "Password length invalid")
+    @Size(min = 4, max = 12, message = "Password length invalid, must be between 4 and 12")
     @NotBlank(message = "Password must contain a value ")
     @JsonIgnore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

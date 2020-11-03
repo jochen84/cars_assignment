@@ -14,11 +14,11 @@ public class Engine {
     @Id
     private String id;
     @NotEmpty(message = "Fuel can not be empty")
-    @Pattern(regexp = "Petrol|Diesel|Electric|Hybrid", message = "Fuel must be Petrol, Diesel, Electric or Hybrid.")
+    @Pattern(regexp = "PETROL|DIESEL|ELECTRIC|HYBRID", message = "Fuel must be PETROL, DIESEL, ELECTRIC or HYBRID.")
     private String fuel;
     private boolean isSupercharged;
     @NotEmpty(message = "Engine Position can not be empty")
-    @Pattern(regexp = "Front|Rear", message = "Engine Position must be Front or Rear")
+    @Pattern(regexp = "FRONT|REAR", message = "Engine Position must be Front or Rear")
     private String enginePosition;
     @Min(value = 1, message = "Cylinders must be no smaller than 1.")
     @Max(value = 16, message = "Cylinders must be no larger than 16.")

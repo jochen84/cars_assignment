@@ -25,7 +25,7 @@ public class AppUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Cacheable(value = "appUsersCache")
-    public List<AppUser> findAll(String name, String mail, boolean sortByName) {
+    public List<AppUser> findAll(String name, String email, boolean sortByName) {
         log.info("Request to find all users");
         var users = appUserRepository.findAll();
         if (name != null) {
@@ -33,9 +33,9 @@ public class AppUserService {
                     .filter(appUser -> appUser.getUsername().toLowerCase().contains(name) || appUser.getFirstname().toLowerCase().contains(name) || appUser.getLastname().toLowerCase().contains(name))
                     .collect(Collectors.toList());
         }
-        if (mail != null) {
+        if (email != null) {
             users.stream()
-                    .filter(appUser -> appUser.getMail().equalsIgnoreCase(mail))
+                    .filter(appUser -> appUser.getEmail().equalsIgnoreCase(email))
                     .collect(Collectors.toList());
         }
         if (sortByName) {

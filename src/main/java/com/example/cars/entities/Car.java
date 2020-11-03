@@ -15,24 +15,25 @@ public class Car implements Serializable {
 
     @Id
     private String id;
-    @NotEmpty(message = "Registration no. can not be empty")
-    @Size(min = 2, max = 7, message = "Registration no. length not valid")
+    @NotBlank(message = "Registration no. can not be empty")
+    @Pattern(regexp = "([A-Z]){3}([0-9]){2}([A-Z0-9])", message = "Registration number is not valid")
     private String regNum;
-    @NotEmpty(message = "Brand can not be empty")
-    @Size(min = 1, max = 15, message = "Brand length not valid")
+    @NotBlank(message = "Brand can not be empty")
+    @Size(min = 2, max = 16, message = "Brand length not valid, must be between 2 and 16 letters")
     private String brand;
-    @NotEmpty(message = "Model can not be empty")
-    @Size(min = 1, max = 10, message = "Model length not valid")
+    @NotBlank(message = "Model can not be empty")
+    @Size(min = 1, max = 16, message = "Model length not valid, must be between 1 and 16 letters")
     private String model;
-    @NotEmpty(message = "Color can not be empty")
-    @Size(min = 1, max = 10, message = "Color length not valid")
+    @NotBlank(message = "Color can not be empty")
+    @Size(min = 2, max = 16, message = "Color length not valid, must be between 2 and 16 letters")
     private String color;
     @Min(value = 1800, message = "Production Year should be larger than 1800")
     @Max(value = 2020, message = "Production Year should be smaller than 2020")
     private int prodYear;
     @Min(value = 2, message = "No. of Seats should be no smaller than 2")
-    @Max(value = 7, message = "No. of Seats should be no larger than 7")
+    @Max(value = 9, message = "No. of Seats should be no larger than 9")
     private int numOfSeats;
+    @PositiveOrZero
     private int price;
     private List<String> equipment;
     @NotNull
