@@ -25,8 +25,8 @@ public class CarService {
     private final CarRepository carRepository;
     private final AppUserService appUserService;
 
-    public List<Car> findAll(String regNum, String brand, String model, String color, String prodYear, String numOfSeats, String equipment, String fuel, String isSupercharged, String enginePosition, String cylinders, String gearBox, String totalGears, String driveLine,
-                             boolean sortByRegNum, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear, boolean sortByNumOfSeats/*, boolean sortByFuel, boolean sortByIsSupercharged, boolean sortByEnginePosition, boolean sortByCylinders, boolean sortByGearBox, boolean sortByTotalGears, boolean sortBydDriveLine*/){
+    public List<Car> findAll(String regNum, String brand, String model, String color, String prodYear, String numOfSeats, String equipment, String fuel, String isSupercharged, String enginePosition, String cylinders, String gearBox, String totalGears, String driveLine, String status,
+                             boolean sortByRegNum, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear, boolean sortByNumOfSeats, boolean sortByStatus){
         log.info("Request to find all cars");
         var cars = carRepository.findAll();
         if(regNum!=null){
@@ -71,6 +71,9 @@ public class CarService {
         if(driveLine!=null){
             cars = cars.stream().filter(car -> car.getGearBox()!=null && car.getGearBox().getDriveLine().equalsIgnoreCase(driveLine)).collect(Collectors.toList());
         }
+        if(status!=null){
+            cars = cars.stream().filter(car -> car.getStatus().equalsIgnoreCase(status)).collect(Collectors.toList());
+        }
         if(sortByRegNum){
             cars.sort(Comparator.comparing(Car::getRegNum));
         }
@@ -88,6 +91,9 @@ public class CarService {
         }
         if(sortByNumOfSeats){
             cars.sort(Comparator.comparing(Car::getNumOfSeats));
+        }
+        if(sortByStatus){
+            cars.sort(Comparator.comparing(Car::getStatus));
         }
         return cars;
     }
