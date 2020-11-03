@@ -1,6 +1,7 @@
 package com.example.cars.controllers;
 
 import com.example.cars.entities.Car;
+import com.example.cars.entities.CarRestricted;
 import com.example.cars.services.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class CarController {
     }
 
     @GetMapping("/allcars")
-    public ResponseEntity<List<String>> findAll(@RequestParam(required = false) String brand, @RequestParam(required = false) String model, @RequestParam(required = false) String color, @RequestParam(required = false) String prodYear, @RequestParam(required = false) boolean sortByBrand, @RequestParam(required = false) boolean sortByModel, @RequestParam(required = false) boolean sortByColor, @RequestParam(required = false) boolean sortByProdYear) {
+    public ResponseEntity<List<CarRestricted>> findAll(@RequestParam(required = false) String brand, @RequestParam(required = false) String model, @RequestParam(required = false) String color, @RequestParam(required = false) String prodYear, @RequestParam(required = false) boolean sortByBrand, @RequestParam(required = false) boolean sortByModel, @RequestParam(required = false) boolean sortByColor, @RequestParam(required = false) boolean sortByProdYear) {
         return ResponseEntity.ok(carService.findAllRestricted(brand, model, color, prodYear, sortByBrand, sortByModel, sortByColor, sortByProdYear));
     }
 

@@ -1,6 +1,7 @@
 package com.example.cars.services;
 
 import com.example.cars.entities.Car;
+import com.example.cars.entities.CarRestricted;
 import com.example.cars.repositories.CarRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -130,8 +132,8 @@ public class CarService {
     }
 
     @Cacheable(value = "carsCache")
-    public List<String> findAllRestricted(String brand, String model, String color, String prodYear, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear){
-        List<String> restrictedCarList;
+    public List<CarRestricted> findAllRestricted(String brand, String model, String color, String prodYear, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear){
+        List<CarRestricted> restrictedCarList = new ArrayList<CarRestricted>();
         var cars = carRepository.findAll();
         if (brand != null) {
             cars = cars.stream().filter(car -> car.getBrand().equalsIgnoreCase(brand)).collect(Collectors.toList());
@@ -157,8 +159,16 @@ public class CarService {
         if (sortByProdYear) {
             cars.sort(Comparator.comparing(Car::getProdYear));
         }
-        restrictedCarList = cars.stream()
-                .map(car -> "Brand: "+ car.getBrand() + " Model: " + car.getModel()+" Production Year: "+car.getProdYear()+" Price: "+car.getPrice()).collect(Collectors.toList());
+
+        for(CarRestricted carRestricted: restrictedCarList)
+            for(Car car: cars){
+                carRestricted.setBrand(car.getBrand());
+                carRestricted.setModel(car.getModel());
+                carRestricted.setProdYear(car.getProdYear());
+                carRestricted.setPrice(car.getPrice());
+                restrictedCarList.add(carRestricted);
+            }
+
         return restrictedCarList;
     }
 
