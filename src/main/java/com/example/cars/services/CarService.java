@@ -160,15 +160,9 @@ public class CarService {
             cars.sort(Comparator.comparing(Car::getProdYear));
         }
 
-        for(CarRestricted carRestricted: restrictedCarList)
-            for(Car car: cars){
-                carRestricted.setBrand(car.getBrand());
-                carRestricted.setModel(car.getModel());
-                carRestricted.setProdYear(car.getProdYear());
-                carRestricted.setPrice(car.getPrice());
-                restrictedCarList.add(carRestricted);
+        for(Car car : cars){
+            restrictedCarList.add(new CarRestricted(car.getBrand(), car.getModel(), car.getProdYear(), car.getPrice()));
             }
-
         return restrictedCarList;
     }
 

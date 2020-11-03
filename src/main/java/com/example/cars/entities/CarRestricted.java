@@ -22,4 +22,11 @@ public class CarRestricted implements Serializable {
     private int prodYear;
     @PositiveOrZero
     private int price;
+
+    public CarRestricted(String brand, String model, int prodYear, int price) {
+        this.brand = brand;
+        this.model = model;
+        this.prodYear = prodYear;
+        this.price = price;
+    }
 }
