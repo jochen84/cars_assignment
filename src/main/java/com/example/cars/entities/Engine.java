@@ -7,10 +7,13 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 
 
 @Data
-public class Engine {
+public class Engine implements Serializable {
+    private static final long serialVersionUID = -2027830134245548368L;
+
     @Id
     private String id;
     @NotEmpty(message = "Fuel can not be empty")

@@ -7,9 +7,12 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 
 @Data
-public class GearBox {
+public class GearBox  implements Serializable {
+    private static final long serialVersionUID = 2567819975645752735L;
+
     @Id
     private String id;
     @NotEmpty(message = "Gearbox can not be empty")

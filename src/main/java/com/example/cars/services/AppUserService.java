@@ -82,10 +82,10 @@ public class AppUserService {
         if (!isAdmin && !isCurrentUser) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authorized! You can only update your own details");
         }
-        if (appUser.getPassword().length() <= 16) {
-            appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
-        }
+
+        var userFromDB = appUserRepository.findById(id).get();
         appUser.setId(id);
+        appUser.setPassword(userFromDB.getPassword());
         appUserRepository.save(appUser);
     }
 
