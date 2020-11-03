@@ -154,9 +154,6 @@ public class CarService {
     }
 
     public void reserveCar(String id){
-        //if (SecurityContextHolder.getContext().getAuthentication().getName() == "anonymousUser"){
-        //    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must log in to reserve a car");
-        //}
         var currentUser = appUserService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         var car = findById(id);
         if (car.getStatus().equals("Reserved") || car.getStatus().equals("Sold")){

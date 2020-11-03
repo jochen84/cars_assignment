@@ -86,7 +86,6 @@ public class AppUserService {
             appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         }
         appUser.setId(id);
-        //appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         appUserRepository.save(appUser);
     }
 
