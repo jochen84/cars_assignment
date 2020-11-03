@@ -5,6 +5,9 @@ import com.example.cars.repositories.CarRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.convert.Jsr310Converters;
 import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.http.HttpStatus;
@@ -25,6 +28,7 @@ public class CarService {
     private final CarRepository carRepository;
     private final AppUserService appUserService;
 
+    @Cacheable(value = "carsCache")
     public List<Car> findAll(String regNum, String brand, String model, String color, String prodYear, String numOfSeats, String equipment, String fuel, String isSupercharged, String enginePosition, String cylinders, String gearBox, String totalGears, String driveLine, String status,
                              boolean sortByRegNum, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear, boolean sortByNumOfSeats, boolean sortByStatus){
         log.info("Request to find all cars");
@@ -98,15 +102,18 @@ public class CarService {
         return cars;
     }
 
+    @Cacheable(value = "carsCache", key = "#id")
     public Car findById(String id){
         return carRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id"));
     }
 
+    @CachePut(value = "carsCache", key = "#result.id")
     public Car save(Car car){
         return carRepository.save(car);
     }
 
+    @CachePut(value = "carsCache", key = "#id")
     public void update(String id, Car car){
         if (!carRepository.existsById(id)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id");
@@ -115,6 +122,7 @@ public class CarService {
         carRepository.save(car);
     }
 
+    @CacheEvict(value = "carsCache", key = "#id")
     public void delete(String id){
         if (!carRepository.existsById(id)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id");
@@ -122,6 +130,7 @@ public class CarService {
         carRepository.deleteById(id);
     }
 
+    @Cacheable(value = "carsCache")
     public List<String> findAllRestricted(String brand, String model, String color, String prodYear, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear){
         List<String> restrictedCarList;
         var cars = carRepository.findAll();
@@ -150,10 +159,11 @@ public class CarService {
             cars.sort(Comparator.comparing(Car::getProdYear));
         }
         restrictedCarList = cars.stream()
-                .map(car -> car.getBrand()+"+"+car.getModel()).collect(Collectors.toList());
+                .map(car -> "Brand: "+ car.getBrand()+"+ Model: "+car.getModel()+"+ Production Year: "+car.getProdYear()+"+ Price: "+car.getPrice()).collect(Collectors.toList());
         return restrictedCarList;
     }
 
+    @CachePut(value = "carsCache", key = "#id")
     public void reserveCar(String id){
         //if (SecurityContextHolder.getContext().getAuthentication().getName() == "anonymousUser"){
         //    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must log in to reserve a car");
@@ -169,6 +179,7 @@ public class CarService {
         update(id, car);
     }
 
+    @CachePut(value = "carsCache", key = "#id")
     public void unReserveCar(String id){
         var car = findById(id);
         var currentReserveUser = car.getReservedByAppUser();

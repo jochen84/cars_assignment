@@ -21,10 +21,6 @@ import java.util.stream.Collectors;
 public class EngineService {
     private final EngineRepository engineRepository;
     @Cacheable(value = "enginesCache")
-//    public List<Engine> findAll(){
-//        log.info("Request to find all engines");
-//        return engineRepository.findAll();
-//    }
     public List<Engine> findAll(String fuel, String isSupercharged, String enginePosition, String cylinders, boolean sortByFuel, boolean sortByIsSupercharged, boolean sortByEnginePosition, boolean sortByCylinders){
         log.info("Request to find all engines");
         var engines = engineRepository.findAll();
