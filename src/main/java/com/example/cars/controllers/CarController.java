@@ -42,6 +42,12 @@ public class CarController {
         carService.unReserveCar(id);
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_CARDEALER"})
+    @PutMapping("/changestatus/{id}")
+    public void changeStatus(@PathVariable String id, @RequestParam(required = false) String status){
+        carService.changeStatus(id, status);
+    }
+
     @Secured({"ROLE_ADMIN", "ROLE_CARDEALER", "ROLE_USER"})
     @GetMapping("/{id}")
     public ResponseEntity<Car> findById(@PathVariable String id){
