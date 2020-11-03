@@ -51,7 +51,7 @@ public class EngineService {
         return engines;
     }
 
-    @Cacheable(value = "enginesCache")
+    @Cacheable(value = "enginesCache",  key = "#id")
     public Engine findById(String id){
         log.info("Request to find engine by id");
         return engineRepository.findById(id)
