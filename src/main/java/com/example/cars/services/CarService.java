@@ -97,31 +97,31 @@ public class CarService {
         return cars;
     }
 
-    public Car findById(String id) {
+    public Car findById(String id){
         return carRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id"));
     }
 
-    public Car save(Car car) {
+    public Car save(Car car){
         return carRepository.save(car);
     }
 
-    public void update(String id, Car car) {
-        if (!carRepository.existsById(id)) {
+    public void update(String id, Car car){
+        if (!carRepository.existsById(id)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id");
         }
         car.setId(id);
         carRepository.save(car);
     }
 
-    public void delete(String id) {
-        if (!carRepository.existsById(id)) {
+    public void delete(String id){
+        if (!carRepository.existsById(id)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id");
         }
         carRepository.deleteById(id);
     }
 
-    public List<String> findAllRestricted(String brand, String model, String color, String prodYear, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear) {
+    public List<String> findAllRestricted(String brand, String model, String color, String prodYear, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear){
         List<String> restrictedCarList;
         var cars = carRepository.findAll();
         if (brand != null) {
@@ -153,13 +153,13 @@ public class CarService {
         return restrictedCarList;
     }
 
-    public void reserveCar(String id) {
-        if (SecurityContextHolder.getContext().getAuthentication().getName() == "anonymousUser") {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must log in to reserve a car");
-        }
+    public void reserveCar(String id){
+        //if (SecurityContextHolder.getContext().getAuthentication().getName() == "anonymousUser"){
+        //    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must log in to reserve a car");
+        //}
         var currentUser = appUserService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         var car = findById(id);
-        if (car.getStatus().equals("Reserved") || car.getStatus().equals("Sold")) {
+        if (car.getStatus().equals("Reserved") || car.getStatus().equals("Sold")){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "That car is already reserved or sold");
         }
         car.setId(id);
@@ -168,12 +168,12 @@ public class CarService {
         update(id, car);
     }
 
-    public void unReserveCar(String id) {
+    public void unReserveCar(String id){
         var car = findById(id);
         var currentReserveUser = car.getReservedByAppUser();
         var currentUserNameLoggedInUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        var isSuperman = checkAuthority("ADMIN") || checkAuthority("CARDEALER");
-        if (!car.getStatus().equals("Reserved")) {
+        var isSuperman = checkAuthority("ADMIN")||checkAuthority("CARDEALER");
+        if (!car.getStatus().equals("Reserved")){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Car is not reserved at the moment");
         }
         if (!isSuperman && !currentReserveUser.getUsername().equals(currentUserNameLoggedInUser)) {
@@ -186,9 +186,9 @@ public class CarService {
         update(id, car);
     }
 
-    public void changeStatus(String id, String status) {
+    public void changeStatus(String id, String status){
         var car = findById(id);
-        if (!status.equals("Reserved") && !status.equals("Instock") && !status.equals("Sold")) {
+        if (!status.equals("Reserved") && !status.equals("Instock") && !status.equals("Sold")){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Available status is Reserved|Instock|Sold");
         }
         car.setId(id);
