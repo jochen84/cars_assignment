@@ -187,6 +187,19 @@ public class CarService {
         update(id, car);
     }
 
+    public void changeStatus(String id, String status){
+        var car = findById(id);
+        if (!status.equals("Reserved") && !status.equals("Instock") && !status.equals("Sold")){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Available status is Reserved|Instock|Sold");
+        }
+        car.setId(id);
+        if (car.getStatus().equals("Reserved")){
+            car.setReservedByAppUser(null);
+        }
+        car.setStatus(status);
+        update(id, car);
+    }
+
     private boolean checkAuthority(String role){
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().toUpperCase().equals("ROLE_"+role));
