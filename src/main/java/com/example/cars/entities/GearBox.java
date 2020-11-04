@@ -10,7 +10,7 @@ import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 @Data
-public class GearBox  implements Serializable {
+public class GearBox implements Serializable {
     private static final long serialVersionUID = 2567819975645752735L;
 
     @Id

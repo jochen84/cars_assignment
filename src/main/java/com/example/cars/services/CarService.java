@@ -103,20 +103,20 @@ public class CarService {
         return cars;
     }
 
-    @Cacheable(value = "carsCache",  key = "#id")
-    public Car findById(String id){
+    @Cacheable(value = "carsCache", key = "#id")
+    public Car findById(String id) {
         return carRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id"));
     }
 
     @CachePut(value = "carsCache", key = "#result.id")
-    public Car save(Car car){
+    public Car save(Car car) {
         return carRepository.save(car);
     }
 
     @CachePut(value = "carsCache", key = "#id")
-    public void update(String id, Car car){
-        if (!carRepository.existsById(id)){
+    public void update(String id, Car car) {
+        if (!carRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id");
         }
         car.setId(id);
@@ -124,15 +124,15 @@ public class CarService {
     }
 
     @CacheEvict(value = "carsCache", key = "#id")
-    public void delete(String id){
-        if (!carRepository.existsById(id)){
+    public void delete(String id) {
+        if (!carRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a car with that id");
         }
         carRepository.deleteById(id);
     }
 
     @Cacheable(value = "carsCache")
-    public List<CarRestricted> findAllRestricted(String brand, String model, String color, String prodYear, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear){
+    public List<CarRestricted> findAllRestricted(String brand, String model, String color, String prodYear, boolean sortByBrand, boolean sortByModel, boolean sortByColor, boolean sortByProdYear) {
         List<CarRestricted> restrictedCarList = new ArrayList<CarRestricted>();
         var cars = carRepository.findAll();
         if (brand != null) {
@@ -160,17 +160,17 @@ public class CarService {
             cars.sort(Comparator.comparing(Car::getProdYear));
         }
 
-        for(Car car : cars){
+        for (Car car : cars) {
             restrictedCarList.add(new CarRestricted(car.getBrand(), car.getModel(), car.getProdYear(), car.getPrice()));
-            }
+        }
         return restrictedCarList;
     }
 
     @CachePut(value = "carsCache", key = "#id")
-    public void reserveCar(String id){
+    public void reserveCar(String id) {
         var currentUser = appUserService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         var car = findById(id);
-        if (car.getStatus().equals("Reserved") || car.getStatus().equals("Sold")){
+        if (car.getStatus().equals("Reserved") || car.getStatus().equals("Sold")) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "That car is already reserved or sold");
         }
         car.setId(id);
@@ -180,12 +180,12 @@ public class CarService {
     }
 
     @CachePut(value = "carsCache", key = "#id")
-    public void unReserveCar(String id){
+    public void unReserveCar(String id) {
         var car = findById(id);
         var currentReserveUser = car.getReservedByAppUser();
         var currentUserNameLoggedInUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        var isSuperman = checkAuthority("ADMIN")||checkAuthority("CARDEALER");
-        if (!car.getStatus().equals("Reserved")){
+        var isSuperman = checkAuthority("ADMIN") || checkAuthority("CARDEALER");
+        if (!car.getStatus().equals("Reserved")) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Car is not reserved at the moment");
         }
         if (!isSuperman && !currentReserveUser.getUsername().equals(currentUserNameLoggedInUser)) {
@@ -199,9 +199,9 @@ public class CarService {
     }
 
     @CachePut(value = "carsCache", key = "#id")
-    public void changeStatus(String id, String status){
+    public void changeStatus(String id, String status) {
         var car = findById(id);
-        if (!status.equals("Reserved") && !status.equals("Instock") && !status.equals("Sold")){
+        if (!status.equals("Reserved") && !status.equals("Instock") && !status.equals("Sold")) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Available status is Reserved|Instock|Sold");
         }
         car.setId(id);
