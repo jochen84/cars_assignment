@@ -201,11 +201,11 @@ public class CarService {
     @CachePut(value = "carsCache", key = "#id")
     public void changeStatus(String id, String status){
         var car = findById(id);
-        if (!status.equals("Reserved") && !status.equals("Instock") && !status.equals("Sold")){
+        if (!status.equalsIgnoreCase("Reserved") && !status.equalsIgnoreCase("Instock") && !status.equalsIgnoreCase("Sold")){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Available status is Reserved|Instock|Sold");
         }
         car.setId(id);
-        if (car.getStatus().equals("Reserved")) {
+        if (car.getStatus().equalsIgnoreCase("Reserved")) {
             car.setReservedByAppUser(null);
         }
         car.setStatus(status);
