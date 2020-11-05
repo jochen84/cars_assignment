@@ -45,7 +45,7 @@ public class AppUserService {
     }
 
     @Cacheable(value = "appUsersCache", key = "#id")
-    public AppUser findById(String id){
+    public AppUser findById(String id) {
         var isSuperman = checkAuthority("ADMIN") || checkAuthority("CARDEALER");
         var isCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName().toLowerCase().equals(appUserRepository.findById(id).get().getUsername());
         if (!isSuperman && !isCurrentUser) {
@@ -56,23 +56,23 @@ public class AppUserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that id"));
     }
 
-    public AppUser findByUsername(String username){
+    public AppUser findByUsername(String username) {
         log.info("Request to find user by username");
         return appUserRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that username"));
     }
 
     @CachePut(value = "appUsersCache", key = "#result.id")
-    public AppUser save(AppUser appUser){
+    public AppUser save(AppUser appUser) {
         log.info("Request to save user");
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         return appUserRepository.save(appUser);
     }
 
     @CachePut(value = "appUsersCache", key = "#id")
-    public void update(String id, AppUser appUser){
+    public void update(String id, AppUser appUser) {
         log.info("Request to update user");
-        if (!appUserRepository.existsById(id)){
+        if (!appUserRepository.existsById(id)) {
             log.error("Could not find a user with that id");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that id");
         }
@@ -90,9 +90,9 @@ public class AppUserService {
     }
 
     @CacheEvict(value = "appUserCache", key = "#id")
-    public void delete(String id){
+    public void delete(String id) {
         log.info("Request to delete user");
-        if (!appUserRepository.existsById(id)){
+        if (!appUserRepository.existsById(id)) {
             log.error(String.format("Could not find user with id %s.", id));
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find a user with that id");
         }
@@ -105,8 +105,8 @@ public class AppUserService {
         appUserRepository.deleteById(id);
     }
 
-    private boolean checkAuthority(String role){
+    private boolean checkAuthority(String role) {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().toUpperCase().equals("ROLE_"+role));
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().toUpperCase().equals("ROLE_" + role));
     }
 }
