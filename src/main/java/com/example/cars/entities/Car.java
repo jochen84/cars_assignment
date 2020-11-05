@@ -42,6 +42,7 @@ public class Car implements Serializable {
     @NotNull
     @DBRef
     private GearBox gearBox;
+    @NotNull
     @Pattern(regexp = "Instock|Reserved|Sold", message = "Available strings are Instock|Reserved|Sold")
     private String status;
     private AppUser reservedByAppUser;
