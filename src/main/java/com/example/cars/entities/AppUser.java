@@ -3,6 +3,7 @@ package com.example.cars.entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
+@Builder
 public class AppUser implements Serializable {
     private static final long serialVersionUID = -4911994786915834478L;
 
